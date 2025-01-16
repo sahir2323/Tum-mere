@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sahir ki Website</title>
+    <style>
+        /* Chatbot Styling */
+        .chat-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 320px;
+            height: 400px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background-color: #0078d4;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 10px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border-top: 1px solid #ccc;
+        }
+
+        .chat-input input {
+            flex-grow: 1;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        .chat-input button {
+            background-color: #0078d4;
+            color: white;
+            padding: 10px;
+            margin-left: 10px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .chat-input button:hover {
+            background-color: #005ea2;
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background-color: #0078d4;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            margin-bottom: 10px;
+            max-width: 75%;
+        }
+
+        .bot-message {
+            align-self: flex-start;
+            background-color: #e4e4e4;
+            color: #333;
+            padding: 8px 12px;
+            border-radius: 20px;
+            margin-bottom: 10px;
+            max-width: 75%;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Chatbot -->
+    <div class="chat-container" id="chat-container">
+        <div class="chat-header">
+            Sahir ki Web - Customer Support
+        </div>
+
+        <div class="chat-messages" id="chat-messages">
+            <div class="bot-message">Hello! Welcome to Sahir ki Web's Customer Support. How can I assist you today?</div>
+        </div>
+
+        <div class="chat-input">
+            <input type="text" id="user-input" placeholder="Type a message..." />
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Sahir ki Web</p>
+    </footer>
+
+    <!-- Chatbot Script -->
+    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <script>
+        // Initialize EmailJS
+        emailjs.init('YOUR_USER_ID'); // Replace 'YOUR_USER_ID' with your EmailJS User ID
+
+        const chatMessages = document.getElementById('chat-messages');
+        const userInput = document.getElementById('user-input');
+
+        const responses = {
+            "hi": "Hello! How can I help you today?",
+            "what is sahir ki web": "Sahir ki Web is a leading tech company providing innovative web development, software solutions, and digital marketing services.",
+            "services": "We offer Web Design, Web Development, Mobile App Development, SEO, and more.",
+            "contact": "You can reach us at support@sahirkiweb.com or call us at +92 348 204 1019.",
+            "thank you": "You're welcome! Feel free to reach out anytime.",
+            "bye": "Goodbye! Have a great day!"
+        };
+
+        function sendMessage() {
+            const userMessage = userInput.value.trim();
+            
+            if (userMessage === "") return;
+
+            appendMessage(userMessage, 'user-message');
+            userInput.value = "";
+
+            setTimeout(() => {
+                const botResponse = responses[userMessage.toLowerCase()] || "I'm sorry, I didn't understand that. Can you please rephrase?";
+                appendMessage(botResponse, 'bot-message');
+                sendToEmail(userMessage, botResponse); // Send chat message to email
+            }, 1000);
+        }
+
+        function appendMessage(message, senderClass) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add(senderClass);
+            messageElement.textContent = message;
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Function to send chat to email using EmailJS
+        function sendToEmail(userMessage, botResponse) {
+            const templateParams = {
+                user_message: userMessage,
+                bot_response: botResponse
+            };
+
+            emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams) // Replace with your Service ID and Template ID
+                .then((response) => {
+                    console.log('Email sent successfully:', response);
+                }, (error) => {
+                    console.error('Email sending error:', error);
+                });
+        }
+
+        window.onload = () => {
+            userInput.focus();
+        };
+    </script>
+
+</body>
+</html>
